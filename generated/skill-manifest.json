@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T20:23:30.660Z",
+  "generatedAt": "2026-09-19T06:50:22.890Z",
   "version": 2,
   "skills": {
     "access-protected-vercel-deployment": {
@@ -113,10 +113,12 @@
     },
     "ai-gateway": {
       "priority": 7,
-      "summary": "Set up and operate Vercel AI Gateway with current models, correct authentication, routing, spend controls, and verification.",
+      "summary": "Set up and operate Vercel AI Gateway with current models, virtual models, evaluation, authentication, routing, spend controls, and verification.",
       "docs": [
         "https://vercel.com/docs/ai-gateway",
         "https://vercel.com/docs/ai-gateway/getting-started",
+        "https://vercel.com/docs/ai-gateway/models-and-providers/virtual-models",
+        "https://vercel.com/docs/ai-gateway/modalities/evaluation",
         "https://ai-sdk.dev/providers/ai-sdk-providers/ai-gateway"
       ],
       "sitemap": "https://vercel.com/docs/sitemap.md",
@@ -194,7 +196,10 @@
           "ai gateway",
           "vercel ai gateway",
           "ai-gateway",
-          "ai-gateway.vercel.sh"
+          "ai-gateway.vercel.sh",
+          "virtual model",
+          "evaluation model",
+          "vmc/"
         ],
         "allOf": [
           [
@@ -232,7 +237,9 @@
           "safety identifier",
           "reasoning effort",
           "tool calling",
-          "structured outputs"
+          "structured outputs",
+          "experimental_evaluate",
+          "central model configuration"
         ],
         "noneOf": [
           "cloudflare ai gateway",
@@ -246,7 +253,9 @@
           "ai proxy",
           "provider failover",
           "llm gateway",
-          "gateway credits"
+          "gateway credits",
+          "virtual model",
+          "evaluation model"
         ],
         "intents": [
           "add Vercel AI Gateway to an application",
@@ -256,6 +265,9 @@
           "track AI model costs and set budgets",
           "debug AI Gateway requests and routing",
           "connect coding agents to AI Gateway",
+          "give coding agents centrally managed model and provider configuration",
+          "create or update an AI Gateway virtual model",
+          "evaluate application state with typed questions",
           "find a model by modality, capability, price, or data retention",
           "check AI Gateway credit balance or generation cost",
           "configure reasoning or extended thinking across providers and API formats",
@@ -274,7 +286,10 @@
           "BYOK",
           "spend reporting",
           "safetyIdentifier",
-          "Usage & Billing API"
+          "Usage & Billing API",
+          "Virtual Models",
+          "vmc/<slug>",
+          "experimental_evaluate"
         ],
         "examples": []
       }
