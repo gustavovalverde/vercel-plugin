@@ -42,9 +42,11 @@ VERCEL PLATFORM                            📖 docs: https://vercel.com/docs
 │   ⊃ Runtime Cache (per-region key-value, tag-based invalidation)
 │   ⊃ WebSockets (bidirectional realtime on Functions, needs Fluid Compute)
 │   ⊃ Cron Jobs (scheduled function invocation → see § Functions decision matrix)
+│   ⊃ Custom Metrics (numeric samples from Functions → Observability / vc metrics)
 │   ⊃ Vercel Queues (durable topics, at-least-once delivery, consumer groups; beta — the primitive under Workflows)
 │   ⤳ skill: create-a-backend  (backend product and framework selection)
 │   ⤳ skill: vercel-functions
+│   ⤳ skill: custom-metrics
 │   ⤳ skill: routing-middleware
 │   ⤳ skill: runtime-cache
 │   ⤳ skill: queues
