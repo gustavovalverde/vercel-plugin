@@ -4,7 +4,7 @@ description: Vercel Routing Middleware guidance — request interception before 
 metadata:
   priority: 6
   docs:
-    - "https://nextjs.org/docs/app/building-your-application/routing/middleware"
+    - "https://nextjs.org/docs/app/api-reference/file-conventions/proxy"
     - "https://vercel.com/docs/routing-middleware"
   sitemap: "https://nextjs.org/sitemap.xml"
   pathPatterns: 
