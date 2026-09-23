@@ -4,7 +4,7 @@ description: Next.js 16 Cache Components guidance — PPR, use cache directive, 
 metadata:
   priority: 6
   docs:
-    - "https://nextjs.org/docs/app/getting-started/cache-components"
+    - "https://nextjs.org/docs/app/getting-started/caching"
     - "https://nextjs.org/docs/app/api-reference/directives/use-cache"
   pathPatterns:
     - 'next.config.*'
@@ -482,6 +482,6 @@ async function DynamicContent() {
 ```
 
 Sources:
-- [Cache Components Guide](https://nextjs.org/docs/app/getting-started/cache-components)
+- [Cache Components Guide](https://nextjs.org/docs/app/getting-started/caching)
 - [use cache Directive](https://nextjs.org/docs/app/api-reference/directives/use-cache)
 - [unstable_cache (legacy)](https://nextjs.org/docs/app/api-reference/functions/unstable_cache)

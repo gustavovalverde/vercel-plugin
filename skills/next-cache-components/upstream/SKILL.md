@@ -406,6 +406,6 @@ async function DynamicContent() {
 ```
 
 Sources:
-- [Cache Components Guide](https://nextjs.org/docs/app/getting-started/cache-components)
+- [Cache Components Guide](https://nextjs.org/docs/app/getting-started/caching)
 - [use cache Directive](https://nextjs.org/docs/app/api-reference/directives/use-cache)
 - [unstable_cache (legacy)](https://nextjs.org/docs/app/api-reference/functions/unstable_cache)
