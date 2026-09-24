@@ -163,49 +163,12 @@ jobs:
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 ```
 
-### OIDC Federation (Secure Backend Access)
+### Other CI Providers and Backend Access
 
-Vercel OIDC federation is for **secure backend access** — letting your deployed Vercel functions authenticate with third-party services (AWS, GCP, HashiCorp Vault) without storing long-lived secrets. It does **not** replace `VERCEL_TOKEN` for CLI deployments.
-
-**What OIDC does:** Your Vercel function requests a short-lived OIDC token from Vercel at runtime, then exchanges it with an external provider's STS/token endpoint for scoped credentials.
-
-**What OIDC does not do:** Authenticate `vercel pull`/`build`/`deploy` in CI; those need a Vercel access token. Only `vcr` and Remote Cache offer CI-side OIDC exchanges.
-
-**When to use OIDC:**
-- Serverless functions that need to call AWS APIs (S3, DynamoDB, SQS)
-- Functions authenticating to GCP services via Workload Identity Federation
-- Any runtime service-to-service auth where you want to avoid storing static secrets in Vercel env vars
-
-### GitLab CI
-
-```yaml
-deploy:
-  image: node:20
-  stage: deploy
-  script:
-    - npm install -g vercel
-    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-    - vercel build --prod --token=$VERCEL_TOKEN
-    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
-  only:
-    - main
-```
-
-### Bitbucket Pipelines
-
-```yaml
-pipelines:
-  branches:
-    main:
-      - step:
-          name: Deploy to Vercel
-          image: node:20
-          script:
-            - npm install -g vercel
-            - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-            - vercel build --prod --token=$VERCEL_TOKEN
-            - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
-```
+| Task | Read |
+| --- | --- |
+| Deploy from GitLab CI or Bitbucket Pipelines | [references/ci-providers.md](references/ci-providers.md) |
+| Let deployed functions reach AWS, GCP, or Vault without static secrets (OIDC federation) | [references/oidc-federation.md](references/oidc-federation.md) |
 
 ## Common CI Patterns
 
