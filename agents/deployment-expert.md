@@ -179,7 +179,10 @@ Domain issues?
 
 <!-- Sourced from deployments-cicd skill: Promote & Rollback -->
 ```bash
-# Promote a preview deployment to production
+# Stage a production deployment without assigning domains
+vercel deploy --prod --skip-domain
+
+# Promote it (instant, no rebuild)
 vercel promote <deployment-url-or-id>
 
 # Rollback to the previous production deployment
@@ -189,7 +192,9 @@ vercel rollback
 vercel rollback <deployment-url-or-id>
 ```
 
-**Promote vs deploy --prod:** `promote` is instant — it re-points the production alias without rebuilding. Use it when a preview deployment has been validated and is ready for production.
+**Promote a production deployment, not a preview.** Promoting a staged production deployment is instant and serves the same build. Promoting a preview rebuilds it with production environment variables, so the tested build is not the one released.
+
+**Rollback turns off auto-assignment.** New production pushes stop going live until `vercel promote` restores it.
 
 **Additional rollback strategies:**
 
@@ -208,7 +213,7 @@ vercel rollback <deployment-url-or-id>
 | Custom CI/CD (Actions, CircleCI) | Prebuilt deploy | `vercel build && vercel deploy --prebuilt` |
 | Monorepo with Turborepo | Affected + remote cache | `turbo run build --affected --remote-cache` |
 | Preview for every PR | Default behavior | Auto-creates preview URL per branch |
-| Promote preview to production | CLI promotion | `vercel promote <url>` |
+| Release a tested build | Staged production | `vercel deploy --prod --skip-domain` → test → `vercel promote <url>` |
 | Atomic deploys with DB migrations | Two-phase | Run migration → verify → `vercel promote` |
 | Latency-sensitive regional data | Vercel Functions | Keep the Node.js default; set the function region near the data |
 
@@ -238,6 +243,11 @@ on:
   push:
     branches: [main]
 
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -248,13 +258,13 @@ jobs:
         run: npm install -g vercel
 
       - name: Pull Vercel Environment
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production
 
       - name: Build
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod
 
       - name: Deploy
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --prod
 ```
 
 <!-- Sourced from deployments-cicd skill: Common CI Patterns -->
@@ -268,16 +278,21 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 jobs:
   preview:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: npm install -g vercel
-      - run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-      - run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel pull --yes --environment=preview
+      - run: vercel build
       - id: deploy
-        run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+        run: echo "url=$(vercel deploy --prebuilt)" >> $GITHUB_OUTPUT
       - name: Comment PR
         uses: actions/github-script@v7
         with:
@@ -293,25 +308,34 @@ jobs:
 ### Promote After Tests Pass
 
 ```yaml
+env:
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 jobs:
-  deploy-preview:
-    # ... deploy preview ...
-    outputs:
-      url: ${{ steps.deploy.outputs.url }}
-
-  e2e-tests:
-    needs: deploy-preview
-    runs-on: ubuntu-latest
-    steps:
-      - run: npx playwright test --base-url=${{ needs.deploy-preview.outputs.url }}
-
-  promote:
-    needs: [deploy-preview, e2e-tests]
+  stage:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      # ... checkout, install, vercel pull --environment=production, vercel build --prod ...
+      - id: deploy
+        run: echo "url=$(vercel deploy --prebuilt --prod --skip-domain)" >> $GITHUB_OUTPUT
+
+  e2e-tests:
+    needs: stage
+    runs-on: ubuntu-latest
+    steps:
+      - run: npx playwright test --base-url=${{ needs.stage.outputs.url }}
+
+  promote:
+    needs: [stage, e2e-tests]
+    runs-on: ubuntu-latest
     steps:
       - run: npm install -g vercel
-      - run: vercel promote ${{ needs.deploy-preview.outputs.url }} --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel promote ${{ needs.stage.outputs.url }}
 ```
 
 ---

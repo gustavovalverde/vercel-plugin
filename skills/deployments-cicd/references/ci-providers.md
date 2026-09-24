@@ -10,9 +10,9 @@ deploy:
   stage: deploy
   script:
     - npm install -g vercel
-    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-    - vercel build --prod --token=$VERCEL_TOKEN
-    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+    - vercel pull --yes --environment=production
+    - vercel build --prod
+    - vercel deploy --prebuilt --prod
   only:
     - main
 ```
@@ -28,7 +28,7 @@ pipelines:
           image: node:20
           script:
             - npm install -g vercel
-            - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-            - vercel build --prod --token=$VERCEL_TOKEN
-            - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+            - vercel pull --yes --environment=production
+            - vercel build --prod
+            - vercel deploy --prebuilt --prod
 ```
